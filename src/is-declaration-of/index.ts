@@ -11,5 +11,5 @@ export const isDeclarationOf = <T extends Node>(
   node: any,
   declarationName: string
 ): node is T => {
-  return node.type === declarationName;
+  return node && node.type === declarationName;
 };

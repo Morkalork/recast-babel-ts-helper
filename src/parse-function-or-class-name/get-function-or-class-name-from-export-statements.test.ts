@@ -25,7 +25,7 @@ describe("getFunctionOrClassNameFromExportStatements", () => {
     const results = getFunctionOrClassNameFromExportStatements(declaration);
     const result = results[0];
     expect(result).not.toBeNull();
-    expect(result.name).toBe("localMakeStatement");
+    expect(result.name).toBe("makeStatement");
   });
 
   it.each(Object.values(testCases))(
