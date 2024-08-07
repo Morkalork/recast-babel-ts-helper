@@ -7,9 +7,10 @@ import { Node } from "@babel/types";
  * @param declarationName The name of the node type, usually found in the .type property of the node
  * @returns true if the node is a declaration of the given type, false otherwise
  */
-export const isDeclarationOf = <T extends Node>(
-  node: any,
-  declarationName: string
+export const isOfNodeType = <T extends Node>(
+  node: any | any[],
+  declarationName: string | string[]
 ): node is T => {
+  if(Object.i)
   return node && node.type === declarationName;
 };

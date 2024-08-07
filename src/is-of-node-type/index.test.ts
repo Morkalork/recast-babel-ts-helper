@@ -1,4 +1,4 @@
-import { isDeclarationOf } from "./index";
+import { isOfNodeType } from "./index";
 import { describe, expect, it } from "@jest/globals";
 import {
   FunctionDeclaration,
@@ -8,7 +8,7 @@ import {
   identifier,
 } from "@babel/types";
 
-describe("isDeclarationOf", () => {
+describe("isOfNodeType", () => {
   const FunctionDeclarationNode = functionDeclaration(
     identifier("test"),
     [],
@@ -19,7 +19,7 @@ describe("isDeclarationOf", () => {
 
   it("should work for correct type", () => {
     expect(
-      isDeclarationOf<FunctionDeclaration>(
+      isOfNodeType<FunctionDeclaration>(
         FunctionDeclarationNode,
         "FunctionDeclaration"
       )
@@ -27,7 +27,7 @@ describe("isDeclarationOf", () => {
   });
   it("should not work for incorrect type", () => {
     expect(
-      isDeclarationOf<VariableDeclaration>(
+      isOfNodeType<VariableDeclaration>(
         FunctionDeclarationNode,
         "VariableDeclaration"
       )

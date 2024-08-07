@@ -1,5 +1,5 @@
 import { Node } from "@babel/types";
-import { isDeclarationOf } from "../is-declaration-of";
+import { isOfNodeType } from "../is-of-node-type";
 
 /**
  *
@@ -20,7 +20,7 @@ export const getTypeSafeNode = <T extends Node>(
     throw new Error(`Expected ${declarationName} but got ${node.type}`);
   }
 
-  if (!isDeclarationOf<T>(node, declarationName)) {
+  if (!isOfNodeType<T>(node, declarationName)) {
     throw new Error(`Expected node to be of type ${declarationName}`);
   }
 
