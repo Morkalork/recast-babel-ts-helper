@@ -8,9 +8,12 @@ import { Node } from "@babel/types";
  * @returns true if the node is a declaration of the given type, false otherwise
  */
 export const isOfNodeType = <T extends Node>(
-  node: any | any[],
+  node: any,
   declarationName: string | string[]
 ): node is T => {
-  if(Object.i)
+  if (Array.isArray(declarationName)) {
+    return declarationName.every((name) => isOfNodeType(node, name));
+  }
+
   return node && node.type === declarationName;
 };

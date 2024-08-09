@@ -3,6 +3,7 @@ import { DeclarationTemplate } from "./types";
 /**
  * SINGLE EXPORTS
  */
+// 0
 export const noExport: DeclarationTemplate = {
   name: "makeStatement",
   isClass: false,
@@ -29,6 +30,7 @@ export const asyncFunctionExport: DeclarationTemplate = {
   isClass: false,
   code: `export async function makeStatement() {}`,
 };
+// 5
 export const listFunctionRenameExport: DeclarationTemplate = {
   name: "myStatement",
   isClass: false,
@@ -40,7 +42,7 @@ export const classExport: DeclarationTemplate = {
   code: `export class makeStatement {}`,
 };
 export const defaultExport: DeclarationTemplate = {
-  name: "makeStatement",
+  name: "default",
   isClass: false,
   code: `const makeStatement = () => null; export default makeStatement`,
 };
@@ -54,6 +56,7 @@ export const fatArrowExportWithParameters: DeclarationTemplate = {
   isClass: false,
   code: `export const makeStatement = (a: number, b: string) => null`,
 };
+// 10
 export const functionExportWithParameters: DeclarationTemplate = {
   name: "makeStatement",
   isClass: false,
@@ -83,6 +86,7 @@ export const namedExportWithAliasAndDefault: DeclarationTemplate = {
   isClass: false,
   code: `const makeStatement = () => null; export { makeStatement as myStatement, makeStatement as default }`,
 };
+// 15
 export const namedExportWithMultipleAliasesAndDefault: DeclarationTemplate = {
   name: ["myStatement", "yourStatement", "default"],
   isClass: false,
@@ -94,12 +98,12 @@ export const mixedExport: DeclarationTemplate = {
   code: `const makeStatement = () => null; export default makeStatement; export { makeStatement }`,
 };
 export const mixedExportWithAlias: DeclarationTemplate = {
-  name: ["makeStatement", "myStatement", "myStatement"],
+  name: ["default", "myStatement"],
   isClass: false,
   code: `const makeStatement = () => null; export default makeStatement; export { makeStatement as myStatement }`,
 };
 export const mixedExportWithMultipleAliases: DeclarationTemplate = {
-  name: ["makeStatement", "myStatement", "myStatement", "yourStatement"],
+  name: ["default", "myStatement", "yourStatement"],
   isClass: false,
   code: `const makeStatement = () => null; export default makeStatement; export { makeStatement as myStatement, makeStatement as yourStatement }`,
 };
@@ -130,12 +134,17 @@ export const mixedExportWithMultipleAliasesAndNoDefaultAndNamed: DeclarationTemp
  * MISC
  */
 export const exportImportedExportFunction: DeclarationTemplate = {
-  name: "Foo",
+  name: ["foo", "bar"],
   isClass: false,
-  code: `import { Foo } from "./export-declaration-templates.additional"; export { Foo }`,
+  code: `import { foo } from "./export-all-test-case"; export { foo as bar }`,
 };
 export const exportImportImmediatelyFunction: DeclarationTemplate = {
-  name: "Foo",
+  name: ["foo"],
   isClass: false,
-  code: `export { Foo } from "./export-declaration-templates.additional";`,
+  code: `export { foo } from "./export-all-test-case";`,
+};
+export const exportAllNamed: DeclarationTemplate = {
+  name: ["foo", "bar"],
+  isClass: false,
+  code: `export * from "./export-all-test-case";`,
 };

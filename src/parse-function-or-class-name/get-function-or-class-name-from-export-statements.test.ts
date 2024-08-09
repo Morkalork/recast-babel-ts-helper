@@ -1,7 +1,7 @@
 import { getFunctionOrClassNameFromExportStatements } from "./get-function-or-class-name-from-export-statements";
 import { describe, expect, it } from "@jest/globals";
 import { ExportNamedDeclaration, ExportSpecifier } from "@babel/types";
-import * as testCases from "./test-utils/export-declaration-templates";
+import * as testCases from "./test-utils/standard-test-cases";
 import { generateAstFromCode } from "../generate-ast-from-code";
 
 describe("getFunctionOrClassNameFromExportStatements", () => {

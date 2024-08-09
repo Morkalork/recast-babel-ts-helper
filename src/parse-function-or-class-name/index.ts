@@ -1,6 +1,4 @@
-import {
-  File,
-} from "@babel/types";
+import { File } from "@babel/types";
 import { generateAstFromCode } from "../generate-ast-from-code";
 import { getFunctionOrClassNameFromExportStatements } from "./get-function-or-class-name-from-export-statements";
 import { FunctionNameDefinition } from "./types";
@@ -40,6 +38,7 @@ export const parseFunctionOrClassName = (
     );
   }
 
-  const result = exportStatements.map((statement) => getFunctionOrClassNameFromExportStatements(statement));
-  return result[0]; // TODO: Unfuck this
+  return exportStatements
+    .map((statement) => getFunctionOrClassNameFromExportStatements(statement))
+    .flat();
 };

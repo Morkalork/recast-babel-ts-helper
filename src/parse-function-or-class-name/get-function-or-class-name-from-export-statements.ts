@@ -1,5 +1,7 @@
 import {
+  ClassDeclaration,
   DeclareExportAllDeclaration,
+  ExportAllDeclaration,
   ExportDefaultDeclaration,
   ExportDefaultSpecifier,
   ExportNamedDeclaration,
@@ -8,151 +10,140 @@ import {
   Expression,
   Identifier,
   isClass,
+  ObjectPattern,
+  ObjectProperty,
   Statement,
   VariableDeclaration,
 } from "@babel/types";
 import { getTypeSafeNode } from "../get-type-safe-node";
 import { FunctionNameDefinition } from "./types";
-import { isDeclarationOf } from "../is-declaration-of";
-
-const getFunctionOrClassNameFromDefaultExportStatement = (
-  defaultExportedDeclaration: ExportDefaultDeclaration
-): FunctionNameDefinition => {
-  if (
-    isDeclarationOf<Expression>(
-      defaultExportedDeclaration.declaration,
-      "Expression"
-    )
-  ) {
-    return {
-      name: "default",
-      isClass: false,
-    };
-  }
-
-  const name =
-    ("name" in defaultExportedDeclaration.declaration
-      ? (defaultExportedDeclaration.declaration.name as string)
-      : defaultExportedDeclaration.declaration.id?.name) || "";
-
-  return {
-    name,
-    isClass: isClass(defaultExportedDeclaration.declaration),
-  };
-};
-
-const getFunctionOrClassNameFromExportStatement = (
-  exportedFunction:
-    | ExportDefaultSpecifier
-    | ExportNamespaceSpecifier
-    | ExportSpecifier
-): FunctionNameDefinition => {
-  if (
-    isDeclarationOf<ExportDefaultSpecifier>(
-      exportedFunction,
-      "ExportDefaultSpecifier"
-    )
-  ) {
-    return {
-      name: exportedFunction.exported.name,
-      isClass: false,
-      isDefault: true,
-    };
-  }
-
-  if (
-    isDeclarationOf<ExportSpecifier>(exportedFunction, "ExportSpecifier") ||
-    isDeclarationOf<ExportNamespaceSpecifier>(
-      exportedFunction,
-      "ExportNamespaceSpecifier"
-    )
-  ) {
-    if (isDeclarationOf<Identifier>(exportedFunction.exported, "Identifier")) {
-      return {
-        name: exportedFunction.exported.name,
-        isClass: false,
-      };
-    }
-
-    return {
-      name: "default",
-      isClass: false,
-    };
-  }
-};
+import { isOfNodeType } from "../is-of-node-type";
+import { getNameFromExportSpecifier } from "./utils/get-name-from-export-specifier";
+import { getNameFromDefaultExportedDeclaration } from "./utils/get-name-from-default-exported-declaration";
 
 export const getFunctionOrClassNameFromExportStatements = (
   statement: Statement
 ): FunctionNameDefinition[] => {
-  const exportedFunction = getTypeSafeNode<
-    ExportNamedDeclaration | ExportDefaultDeclaration
-  >(
-    statement,
-    statement.type === "ExportNamedDeclaration"
-      ? "ExportNamedDeclaration"
-      : "ExportDefaultDeclaration"
-  );
-
   const exportedFunctionNames: FunctionNameDefinition[] = [];
+
+  const exportedFunction = getTypeSafeNode<
+    ExportNamedDeclaration | ExportDefaultDeclaration | ExportAllDeclaration
+  >(statement, statement.type);
   if (
-    isDeclarationOf<ExportDefaultDeclaration>(
+    isOfNodeType<ExportDefaultDeclaration>(
       exportedFunction,
       "ExportDefaultDeclaration"
     )
   ) {
     exportedFunctionNames.push(
-      getFunctionOrClassNameFromDefaultExportStatement(exportedFunction)
+      getNameFromDefaultExportedDeclaration(exportedFunction)
     );
   }
 
   if (
-    isDeclarationOf<ExportNamedDeclaration>(
+    isOfNodeType<ExportNamedDeclaration>(
       exportedFunction,
       "ExportNamedDeclaration"
     )
   ) {
     const namedExportedFunction = exportedFunction as ExportNamedDeclaration;
-    if (namedExportedFunction.specifiers) {
+    if (
+      namedExportedFunction.specifiers &&
+      namedExportedFunction.specifiers.length > 0
+    ) {
       namedExportedFunction.specifiers.forEach((specifier) => {
-        const exportedFunction =
-          getFunctionOrClassNameFromExportStatement(specifier);
-        exportedFunctionNames.push(exportedFunction);
+        if (
+          !isOfNodeType<
+            ExportSpecifier | ExportDefaultSpecifier | ExportNamespaceSpecifier
+          >(specifier, [
+            "ExportSpecifier",
+            "ExportDefaultSpecifier",
+            "ExportNamespaceSpecifier",
+          ])
+        ) {
+          const exportedFunction = getNameFromExportSpecifier(specifier);
+          exportedFunctionNames.push(exportedFunction);
+        } else {
+          const exportedFunction = specifier.type;
+          console.log(exportedFunction);
+        }
       });
     } else if (namedExportedFunction.declaration) {
       if (
-        !isDeclarationOf<Expression>(
+        !isOfNodeType<Expression>(
           namedExportedFunction.declaration,
           "Expression"
         )
       ) {
         if (
-          isDeclarationOf<VariableDeclaration>(
+          isOfNodeType<VariableDeclaration>(
             namedExportedFunction.declaration,
             "VariableDeclaration"
           )
         ) {
           namedExportedFunction.declaration.declarations.forEach(
             (declaration) => {
-              const name = declaration.id.toString();
-              if (name) {
+              if (isOfNodeType<Identifier>(declaration.id, "Identifier")) {
                 exportedFunctionNames.push({
-                  name,
+                  name: declaration.id.name,
                   isClass: isClass(declaration),
                 });
+              } else if (
+                isOfNodeType<ObjectPattern>(declaration.id, "ObjectPattern")
+              ) {
+                declaration.id.properties.forEach((property) => {
+                  if (
+                    isOfNodeType<ObjectProperty>(property, "ObjectProperty")
+                  ) {
+                    if (isOfNodeType<Identifier>(property.key, "Identifier")) {
+                      exportedFunctionNames.push({
+                        name: property.key.name,
+                        isClass: isClass(declaration),
+                      });
+                    }
+                  }
+                });
+              } else {
+                const name = declaration.id.toString();
+                if (name) {
+                  exportedFunctionNames.push({
+                    name,
+                    isClass: isClass(declaration),
+                  });
+                }
               }
             }
           );
+        } else if (
+          isOfNodeType<ClassDeclaration>(
+            namedExportedFunction.declaration,
+            "ClassDeclaration"
+          )
+        ) {
+          const declarationName = namedExportedFunction.declaration.id?.name;
+          const forcedIdentifierName =
+            namedExportedFunction.declaration.id?.toString();
+          const name = declarationName || forcedIdentifierName || "";
+
+          if (!name) {
+            throw new Error("Could not identify node name");
+          }
+
+          exportedFunctionNames.push({
+            name,
+            isClass: true,
+          });
         } else {
           const declaration = namedExportedFunction.declaration;
           if (
-            isDeclarationOf<DeclareExportAllDeclaration>(
+            isOfNodeType<DeclareExportAllDeclaration>(
               declaration,
               "DeclareExportAllDeclaration"
             )
           ) {
           } else {
-            if ("id" in declaration) {
-              if (isDeclarationOf<Identifier>(declaration.id, "Identifier")) {
+            if (declaration && "id" in declaration) {
+              if (isOfNodeType<Identifier>(declaration.id, "Identifier")) {
                 const name = declaration.id.name;
                 if (name) {
                   exportedFunctionNames.push({
@@ -172,12 +163,21 @@ export const getFunctionOrClassNameFromExportStatements = (
           }
         }
       }
+    } else if (
+      isOfNodeType<ExportAllDeclaration>(
+        exportedFunction,
+        "ExportAllDeclaration"
+      )
+    ) {
+      // Ignore
     } else {
       throw new Error("This should not be possible!");
     }
   }
+
+  /**
   if (
-    isDeclarationOf<ExportDefaultDeclaration>(
+    isOfNodeType<ExportDefaultDeclaration>(
       exportedFunction.declaration,
       "ExportDefaultDeclaration"
     )
@@ -186,7 +186,10 @@ export const getFunctionOrClassNameFromExportStatements = (
       exportedFunction.declaration,
       "ExportDefaultDeclaration"
     );
-    if ("id" in defaultDeclaration.declaration) {
+    if (
+      defaultDeclaration.declaration &&
+      "id" in defaultDeclaration.declaration
+    ) {
       const name = defaultDeclaration.declaration.id?.name;
       if (name) {
         exportedFunctionNames.push({
@@ -201,6 +204,7 @@ export const getFunctionOrClassNameFromExportStatements = (
       });
     }
   }
+     */
 
   return exportedFunctionNames;
 };
