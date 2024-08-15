@@ -175,36 +175,5 @@ export const getFunctionOrClassNameFromExportStatements = (
     }
   }
 
-  /**
-  if (
-    isOfNodeType<ExportDefaultDeclaration>(
-      exportedFunction.declaration,
-      "ExportDefaultDeclaration"
-    )
-  ) {
-    const defaultDeclaration = getTypeSafeNode<ExportDefaultDeclaration>(
-      exportedFunction.declaration,
-      "ExportDefaultDeclaration"
-    );
-    if (
-      defaultDeclaration.declaration &&
-      "id" in defaultDeclaration.declaration
-    ) {
-      const name = defaultDeclaration.declaration.id?.name;
-      if (name) {
-        exportedFunctionNames.push({
-          name,
-          isClass: isClass(defaultDeclaration.declaration),
-        });
-      }
-    } else {
-      exportedFunctionNames.push({
-        name: "default",
-        isClass: isClass(defaultDeclaration.declaration),
-      });
-    }
-  }
-     */
-
   return exportedFunctionNames;
 };
