@@ -37,12 +37,14 @@ export const getNameFromExportSpecifier = (
       return {
         name: exportedFunction.exported.name,
         isClass: false,
+        isDefault: false,
       };
     }
 
     return {
       name: "default",
       isClass: false,
+      isDefault: true,
     };
   }
 };

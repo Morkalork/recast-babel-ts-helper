@@ -64,8 +64,7 @@ export const getFunctionOrClassNameFromExportStatements = (
           const exportedFunction = getNameFromExportSpecifier(specifier);
           exportedFunctionNames.push(exportedFunction);
         } else {
-          const exportedFunction = specifier.type;
-          console.log(exportedFunction);
+          // TODO: Handle this case
         }
       });
     } else if (namedExportedFunction.declaration) {
@@ -87,6 +86,7 @@ export const getFunctionOrClassNameFromExportStatements = (
                 exportedFunctionNames.push({
                   name: declaration.id.name,
                   isClass: isClass(declaration),
+                  isDefault: false,
                 });
               } else if (
                 isOfNodeType<ObjectPattern>(declaration.id, "ObjectPattern")
@@ -99,6 +99,7 @@ export const getFunctionOrClassNameFromExportStatements = (
                       exportedFunctionNames.push({
                         name: property.key.name,
                         isClass: isClass(declaration),
+                        isDefault: false,
                       });
                     }
                   }
@@ -109,6 +110,7 @@ export const getFunctionOrClassNameFromExportStatements = (
                   exportedFunctionNames.push({
                     name,
                     isClass: isClass(declaration),
+                    isDefault: false,
                   });
                 }
               }
@@ -132,6 +134,7 @@ export const getFunctionOrClassNameFromExportStatements = (
           exportedFunctionNames.push({
             name,
             isClass: true,
+            isDefault: false,
           });
         } else {
           const declaration = namedExportedFunction.declaration;
@@ -149,12 +152,14 @@ export const getFunctionOrClassNameFromExportStatements = (
                   exportedFunctionNames.push({
                     name,
                     isClass: isClass(declaration),
+                    isDefault: false,
                   });
                 }
               } else {
                 exportedFunctionNames.push({
                   name: declaration.id.toString() || "",
                   isClass: isClass(declaration),
+                  isDefault: false,
                 });
               }
             } else {

@@ -14,13 +14,21 @@ export const getNameFromDefaultExportedDeclaration = (
     return {
       name: "default",
       isClass: false,
+      isDefault: true,
     };
   }
 
   if (defaultExportedDeclaration || defaultExportedDeclaration.declaration) {
+    let name = "default";
+
+    if ("id" in defaultExportedDeclaration.declaration) {
+      name = defaultExportedDeclaration.declaration.id?.name || "";
+    }
+
     return {
-      name: "default",
-      isClass: false,
+      name,
+      isClass: isClass(defaultExportedDeclaration.declaration),
+      isDefault: true,
     };
   }
 
@@ -32,5 +40,6 @@ export const getNameFromDefaultExportedDeclaration = (
   return {
     name,
     isClass: isClass(defaultExportedDeclaration.declaration),
+    isDefault: true,
   };
 };

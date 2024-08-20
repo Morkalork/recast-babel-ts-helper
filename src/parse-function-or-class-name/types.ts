@@ -1,5 +1,5 @@
 export type FunctionNameDefinition = {
   name: string;
-  isClass?: boolean;
-  isDefault?: boolean;
+  isClass: boolean;
+  isDefault: boolean;
 };
