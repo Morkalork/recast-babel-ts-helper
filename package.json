@@ -1,5 +1,5 @@
 {
-  "name": "ts-ast-helpers",
+  "name": "vscode-extension-ast-helpers",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
