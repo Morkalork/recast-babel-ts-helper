@@ -177,7 +177,7 @@ export const getFunctionOrClassNameFromExportStatements = (
               } else {
                 exportedFunctionNames.push(
                   createFunctionNameDefinition({
-                    name: declaration.id.toString() || "",
+                    name: declaration.id?.toString() || "",
                     isClass: isClass(declaration),
                     node: declaration,
                     parameters: getParametersFromNode(declaration),

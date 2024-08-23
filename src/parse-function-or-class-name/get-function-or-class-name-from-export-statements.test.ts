@@ -54,11 +54,17 @@ describe("getFunctionOrClassNameFromExportStatements", () => {
 
                 expect(resultingParameter).not.toBeUndefined();
 
-                expect(resultingParameter.name).toEqual(expectedParameter.name);
-                expect(resultingParameter.type).toEqual(expectedParameter.type);
-                expect(resultingParameter.isOptional).toEqual(
-                  expectedParameter.isOptional
-                );
+                if (resultingParameter) {
+                  expect(resultingParameter.name).toEqual(
+                    expectedParameter.name
+                  );
+                  expect(resultingParameter.type).toEqual(
+                    expectedParameter.type
+                  );
+                  expect(resultingParameter.isOptional).toEqual(
+                    expectedParameter.isOptional
+                  );
+                }
               });
             }
           });

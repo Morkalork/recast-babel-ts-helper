@@ -21,7 +21,7 @@ export const getNameFromDefaultExportedDeclaration = (
     });
   }
 
-  if (defaultExportedDeclaration || defaultExportedDeclaration.declaration) {
+  if (defaultExportedDeclaration && defaultExportedDeclaration.declaration) {
     let name = "default";
 
     if ("id" in defaultExportedDeclaration.declaration) {

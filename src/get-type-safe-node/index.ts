@@ -2,7 +2,8 @@ import { Node } from "@babel/types";
 import { isOfNodeType } from "../is-of-node-type";
 
 /**
- *
+ * This function takes in a node and a declaration name, and returns the node casted to the given type.
+ * 
  * @param node A node in a recast AST
  * @param declarationName The name of the node type, usually found in the .type property of the node
  * @returns The node casted to the given type

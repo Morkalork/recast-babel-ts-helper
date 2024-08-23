@@ -10,7 +10,7 @@ import { FunctionNameDefinition } from "./types";
  * @returns A FunctionNameDefinition object with the name of the function or class, and a boolean indicating if it is a class.
  * @throws Error if the code does not correspond to a standard AST, or if the code does not contain a function or class.
  */
-export const parseFunctionOrClassName = (
+export const parseFunctionOrClass = (
   code: string | File
 ): FunctionNameDefinition[] => {
   const ast: File = typeof code === "string" ? generateAstFromCode(code) : code;

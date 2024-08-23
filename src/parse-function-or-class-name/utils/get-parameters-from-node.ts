@@ -21,6 +21,7 @@ export const getParametersFromNode = (
     params = node.params as Identifier[];
   } else if (
     isOfNodeType<VariableDeclarator>(node, "VariableDeclarator") &&
+    node.init &&
     "params" in node.init
   ) {
     params = node.init.params;
@@ -46,7 +47,7 @@ export const getParametersFromNode = (
     .filter((params) => "name" in params)
     .map((param) => {
       const type =
-        "typeAnnotation" in param.typeAnnotation
+        param.typeAnnotation && "typeAnnotation" in param.typeAnnotation
           ? param.typeAnnotation.typeAnnotation.type
           : "TSAnyKeyword";
       return {

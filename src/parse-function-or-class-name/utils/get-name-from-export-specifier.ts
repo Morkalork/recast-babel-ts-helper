@@ -18,7 +18,7 @@ export const getNameFromExportSpecifier = (
   const functionNameDefinition = createFunctionNameDefinition({
     name: "",
     node: exportedFunction,
-    parameters: []
+    parameters: [],
   });
 
   if (
@@ -54,4 +54,6 @@ export const getNameFromExportSpecifier = (
       isDefault: true,
     };
   }
+
+  return functionNameDefinition;
 };
