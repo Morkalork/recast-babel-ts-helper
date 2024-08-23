@@ -1,6 +1,8 @@
 import { ExportDefaultDeclaration, Expression, isClass } from "@babel/types";
 import { FunctionNameDefinition } from "../types";
 import { isOfNodeType } from "../../is-of-node-type";
+import { createFunctionNameDefinition } from "../../utils/create-function-name-definition";
+import { getParametersFromNode } from "./get-parameters-from-node";
 
 export const getNameFromDefaultExportedDeclaration = (
   defaultExportedDeclaration: ExportDefaultDeclaration
@@ -11,11 +13,12 @@ export const getNameFromDefaultExportedDeclaration = (
       "Expression"
     )
   ) {
-    return {
+    return createFunctionNameDefinition({
       name: "default",
-      isClass: false,
       isDefault: true,
-    };
+      node: defaultExportedDeclaration.declaration,
+      parameters: getParametersFromNode(defaultExportedDeclaration.declaration),
+    });
   }
 
   if (defaultExportedDeclaration || defaultExportedDeclaration.declaration) {
@@ -25,11 +28,13 @@ export const getNameFromDefaultExportedDeclaration = (
       name = defaultExportedDeclaration.declaration.id?.name || "";
     }
 
-    return {
+    return createFunctionNameDefinition({
       name,
       isClass: isClass(defaultExportedDeclaration.declaration),
       isDefault: true,
-    };
+      node: defaultExportedDeclaration.declaration,
+      parameters: getParametersFromNode(defaultExportedDeclaration.declaration),
+    });
   }
 
   const name =
@@ -37,9 +42,11 @@ export const getNameFromDefaultExportedDeclaration = (
       ? (defaultExportedDeclaration.declaration.name as string)
       : defaultExportedDeclaration.declaration.id?.name) || "";
 
-  return {
+  return createFunctionNameDefinition({
     name,
     isClass: isClass(defaultExportedDeclaration.declaration),
     isDefault: true,
-  };
+    node: defaultExportedDeclaration.declaration,
+    parameters: getParametersFromNode(defaultExportedDeclaration.declaration),
+  });
 };

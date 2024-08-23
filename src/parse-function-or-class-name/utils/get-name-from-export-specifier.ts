@@ -6,6 +6,8 @@ import {
 } from "@babel/types";
 import { isOfNodeType } from "../../is-of-node-type";
 import { FunctionNameDefinition } from "../types";
+import { createFunctionNameDefinition } from "../../utils/create-function-name-definition";
+import { getParametersFromNode } from "./get-parameters-from-node";
 
 export const getNameFromExportSpecifier = (
   exportedFunction:
@@ -13,6 +15,12 @@ export const getNameFromExportSpecifier = (
     | ExportNamespaceSpecifier
     | ExportSpecifier
 ): FunctionNameDefinition => {
+  const functionNameDefinition = createFunctionNameDefinition({
+    name: "",
+    node: exportedFunction,
+    parameters: []
+  });
+
   if (
     isOfNodeType<ExportDefaultSpecifier>(
       exportedFunction,
@@ -20,8 +28,8 @@ export const getNameFromExportSpecifier = (
     )
   ) {
     return {
+      ...functionNameDefinition,
       name: exportedFunction.exported.name,
-      isClass: false,
       isDefault: true,
     };
   }
@@ -35,15 +43,14 @@ export const getNameFromExportSpecifier = (
   ) {
     if (isOfNodeType<Identifier>(exportedFunction.exported, "Identifier")) {
       return {
+        ...functionNameDefinition,
         name: exportedFunction.exported.name,
-        isClass: false,
-        isDefault: false,
       };
     }
 
     return {
+      ...functionNameDefinition,
       name: "default",
-      isClass: false,
       isDefault: true,
     };
   }

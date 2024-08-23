@@ -30,7 +30,7 @@ describe("getFunctionOrClassNameFromExportStatements", () => {
 
   it.each(Object.values(testCases))(
     "should handle '$code'",
-    ({ code, name, hasNoExport }) => {
+    ({ code, name, hasNoExport, parameters }) => {
       const ast = generateAstFromCode(code);
       const statements = ast.program.body.filter((bodyPart) =>
         bodyPart.type.startsWith("Export")
@@ -45,6 +45,22 @@ describe("getFunctionOrClassNameFromExportStatements", () => {
           const results = getFunctionOrClassNameFromExportStatements(statement);
           results.forEach((result) => {
             expect(names).toContain(result.name);
+            const expectedParameters = parameters && parameters[result.name];
+            if (expectedParameters) {
+              expectedParameters.forEach((expectedParameter) => {
+                const resultingParameter = result.parameters.find(
+                  (p) => p.name === expectedParameter.name
+                );
+
+                expect(resultingParameter).not.toBeUndefined();
+
+                expect(resultingParameter.name).toEqual(expectedParameter.name);
+                expect(resultingParameter.type).toEqual(expectedParameter.type);
+                expect(resultingParameter.isOptional).toEqual(
+                  expectedParameter.isOptional
+                );
+              });
+            }
           });
         }
       });

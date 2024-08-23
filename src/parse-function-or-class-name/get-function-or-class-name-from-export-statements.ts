@@ -8,18 +8,22 @@ import {
   ExportNamespaceSpecifier,
   ExportSpecifier,
   Expression,
+  FunctionExpression,
   Identifier,
   isClass,
   ObjectPattern,
   ObjectProperty,
   Statement,
+  TSType,
   VariableDeclaration,
 } from "@babel/types";
 import { getTypeSafeNode } from "../get-type-safe-node";
-import { FunctionNameDefinition } from "./types";
+import { FunctionNameDefinition, FunctionParameter } from "./types";
 import { isOfNodeType } from "../is-of-node-type";
 import { getNameFromExportSpecifier } from "./utils/get-name-from-export-specifier";
 import { getNameFromDefaultExportedDeclaration } from "./utils/get-name-from-default-exported-declaration";
+import { createFunctionNameDefinition } from "../utils/create-function-name-definition";
+import { getParametersFromNode } from "./utils/get-parameters-from-node";
 
 export const getFunctionOrClassNameFromExportStatements = (
   statement: Statement
@@ -83,11 +87,14 @@ export const getFunctionOrClassNameFromExportStatements = (
           namedExportedFunction.declaration.declarations.forEach(
             (declaration) => {
               if (isOfNodeType<Identifier>(declaration.id, "Identifier")) {
-                exportedFunctionNames.push({
-                  name: declaration.id.name,
-                  isClass: isClass(declaration),
-                  isDefault: false,
-                });
+                exportedFunctionNames.push(
+                  createFunctionNameDefinition({
+                    name: declaration.id.name,
+                    isClass: isClass(declaration),
+                    node: declaration,
+                    parameters: getParametersFromNode(declaration),
+                  })
+                );
               } else if (
                 isOfNodeType<ObjectPattern>(declaration.id, "ObjectPattern")
               ) {
@@ -96,22 +103,28 @@ export const getFunctionOrClassNameFromExportStatements = (
                     isOfNodeType<ObjectProperty>(property, "ObjectProperty")
                   ) {
                     if (isOfNodeType<Identifier>(property.key, "Identifier")) {
-                      exportedFunctionNames.push({
-                        name: property.key.name,
-                        isClass: isClass(declaration),
-                        isDefault: false,
-                      });
+                      exportedFunctionNames.push(
+                        createFunctionNameDefinition({
+                          name: property.key.name,
+                          isClass: isClass(declaration),
+                          node: declaration,
+                          parameters: getParametersFromNode(declaration),
+                        })
+                      );
                     }
                   }
                 });
               } else {
                 const name = declaration.id.toString();
                 if (name) {
-                  exportedFunctionNames.push({
-                    name,
-                    isClass: isClass(declaration),
-                    isDefault: false,
-                  });
+                  exportedFunctionNames.push(
+                    createFunctionNameDefinition({
+                      name,
+                      isClass: isClass(declaration),
+                      node: declaration,
+                      parameters: getParametersFromNode(declaration),
+                    })
+                  );
                 }
               }
             }
@@ -131,11 +144,14 @@ export const getFunctionOrClassNameFromExportStatements = (
             throw new Error("Could not identify node name");
           }
 
-          exportedFunctionNames.push({
-            name,
-            isClass: true,
-            isDefault: false,
-          });
+          exportedFunctionNames.push(
+            createFunctionNameDefinition({
+              name,
+              isClass: true,
+              node: namedExportedFunction.declaration,
+              parameters: getParametersFromNode(namedExportedFunction.declaration),
+            })
+          );
         } else {
           const declaration = namedExportedFunction.declaration;
           if (
@@ -149,18 +165,24 @@ export const getFunctionOrClassNameFromExportStatements = (
               if (isOfNodeType<Identifier>(declaration.id, "Identifier")) {
                 const name = declaration.id.name;
                 if (name) {
-                  exportedFunctionNames.push({
-                    name,
-                    isClass: isClass(declaration),
-                    isDefault: false,
-                  });
+                  exportedFunctionNames.push(
+                    createFunctionNameDefinition({
+                      name,
+                      isClass: isClass(declaration),
+                      node: declaration,
+                      parameters: getParametersFromNode(declaration),
+                    })
+                  );
                 }
               } else {
-                exportedFunctionNames.push({
-                  name: declaration.id.toString() || "",
-                  isClass: isClass(declaration),
-                  isDefault: false,
-                });
+                exportedFunctionNames.push(
+                  createFunctionNameDefinition({
+                    name: declaration.id.toString() || "",
+                    isClass: isClass(declaration),
+                    node: declaration,
+                    parameters: getParametersFromNode(declaration),
+                  })
+                );
               }
             } else {
               // Ignore
