@@ -7,7 +7,7 @@ Basic usage may look like this:
 Install:
 
 ```node
-npm install --save recast-babel-ts-helper
+npm install recast-babel-ts-helper
 ```
 
 Usage:

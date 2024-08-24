@@ -14,7 +14,6 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/types": "^7.24.7",
     "@rollup/plugin-commonjs": "^26.0.1",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.6",
@@ -28,6 +27,7 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "recast": "^0.23.9"
+    "recast": "^0.23.9",
+    "@babel/types": "^7.24.7"
   }
 }
