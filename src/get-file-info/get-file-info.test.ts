@@ -30,6 +30,7 @@ describe("getFileInfo", () => {
     const result = await getFileInfo(filePath);
     expect(result.text).toEqual("text");
     expect(vscode.Uri.file).toHaveBeenCalledWith(filePath);
+    expect(result.fileName).toEqual("file.ts");
     expect(result.fileExtension).toEqual("ts");
   });
 
@@ -40,6 +41,7 @@ describe("getFileInfo", () => {
     const result = await getFileInfo(undefined);
     expect(result.text).toEqual("test");
     expect(result.currentlyOpenFileUri.fsPath).toEqual("/test.ts");
+    expect(result.fileName).toEqual("file.ts");
     expect(result.fileExtension).toEqual("ts");
   });
 });

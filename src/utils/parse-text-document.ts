@@ -4,6 +4,7 @@ import path from "path";
 type ReturnData = {
   text: string;
   currentlyOpenFileUri: vscode.Uri;
+  fileName: string;
   fileExtension?: string;
 };
 
@@ -20,9 +21,10 @@ export const parseTextDocument = async (
   }
 
   const text = doc.getText();
-  const fileExtension = doc.fileName.split(".").pop();
+  const fileName = doc.fileName;
+  const fileExtension = fileName.split(".").pop();
 
   const currentlyOpenFileUri = doc.uri;
 
-  return { text, currentlyOpenFileUri, fileExtension };
+  return { text, currentlyOpenFileUri, fileExtension, fileName };
 };
