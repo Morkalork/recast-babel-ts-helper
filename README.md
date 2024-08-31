@@ -113,5 +113,9 @@ npm t
 Bump the version in package.json and run the following command:
 
 ```bash
+# Build the app in /dist
+npm run build
+
+# Publish it to npmjs.org
 npm publish --access public
 ```
