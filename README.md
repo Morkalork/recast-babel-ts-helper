@@ -106,3 +106,12 @@ npm run build
 // Test
 npm t
 ```
+
+## How do I publish a new version?
+
+(_This is mainly because I myself sometimes forget_)
+Bump the version in package.json and run the following command:
+
+```bash
+npm publish --access public
+```
