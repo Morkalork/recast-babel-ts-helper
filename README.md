@@ -122,6 +122,9 @@ npm publish --access public
 # Tag it
 git tag -a vX.XX -m "What have you done!?"
 
+# Push (preferably a branch and not main)
+git push origin main
+
 # Push it all
 git push origin --tags
 ```
