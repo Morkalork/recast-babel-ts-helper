@@ -43,5 +43,6 @@ describe("getFileInfo", () => {
     expect(result.currentlyOpenFileUri.fsPath).toEqual("/test.ts");
     expect(result.fileName).toEqual("file.ts");
     expect(result.fileExtension).toEqual("ts");
+    expect(result.dir).toBe("/");
   });
 });

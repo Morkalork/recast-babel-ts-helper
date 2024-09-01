@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import fs from "fs";
 import { parseTextDocument } from "../utils/parse-text-document";
+import path from "path";
 
 /**
  * Get the content and information about a file on disk, or the currently open file in the editor.
@@ -33,5 +34,7 @@ export const getFileInfo = async (filePath?: string) => {
     fileExtension = "js";
   }
 
-  return { text, currentlyOpenFileUri, fileExtension, fileName };
+  const dir = path.dirname(currentlyOpenFileUri.fsPath);
+
+  return { text, currentlyOpenFileUri, fileExtension, fileName, dir };
 };

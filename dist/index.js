@@ -415,24 +415,26 @@ const parseTextDocument = (doc) => __awaiter(void 0, void 0, void 0, function* (
         throw new Error(`The file "${fileName}" is already a test file.`);
     }
     const text = doc.getText();
-    const fileExtension = doc.fileName.split(".").pop();
+    const fileName = doc.fileName;
+    const fileExtension = fileName.split(".").pop();
     const currentlyOpenFileUri = doc.uri;
-    return { text, currentlyOpenFileUri, fileExtension };
+    return { text, currentlyOpenFileUri, fileExtension, fileName };
 });
 
 /**
  * Get the content and information about a file on disk, or the currently open file in the editor.
  * @param filePath The path to the file on disk, or undefined to get the currently open file in the editor.
- * @returns The text content of the file, the URI of the currently open file, and the file extension.
+ * @returns The text content of the file, the URI of the currently open file, and the file name and extension.
  */
 const getFileInfo = (filePath) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     let text = "";
+    let fileName = "";
     let fileExtension = "";
     let currentlyOpenFileUri = vscode__namespace.Uri.file("");
     if (filePath) {
         text = fs.readFileSync(filePath, "utf8");
-        const fileName = filePath.split("/").pop() || "";
+        fileName = filePath.split("/").pop() || "";
         fileExtension = fileName.includes(".")
             ? filePath.split(".").pop() || ""
             : "";
@@ -442,13 +444,15 @@ const getFileInfo = (filePath) => __awaiter(void 0, void 0, void 0, function* ()
         const document = (_a = vscode__namespace.window.activeTextEditor) === null || _a === void 0 ? void 0 : _a.document;
         const documentInfo = yield parseTextDocument(document);
         text = documentInfo.text;
+        fileName = documentInfo.fileName;
         fileExtension = documentInfo.fileExtension || "";
         currentlyOpenFileUri = documentInfo.currentlyOpenFileUri;
     }
     if (!fileExtension) {
         fileExtension = "js";
     }
-    return { text, currentlyOpenFileUri, fileExtension };
+    const dir = path.dirname(currentlyOpenFileUri.fsPath);
+    return { text, currentlyOpenFileUri, fileExtension, fileName, dir };
 });
 
 exports.generateAstFromCode = generateAstFromCode;

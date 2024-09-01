@@ -120,7 +120,7 @@ npm run build
 npm publish --access public
 
 # Tag it
-git push -a vX.XX -m "What have you done!?"
+git tag -a vX.XX -m "What have you done!?"
 
 # Push it all
 git push origin --tags
