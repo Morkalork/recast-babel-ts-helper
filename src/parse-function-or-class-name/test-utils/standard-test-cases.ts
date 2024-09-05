@@ -166,3 +166,29 @@ export const exportAllNamed: DeclarationTemplate = {
   isClass: false,
   code: `export * from "./export-all-test-case";`,
 };
+
+/**
+ * React component-like tests
+ */
+export const exportReactLikeClassComponent: DeclarationTemplate = {
+  name: "MyClassComponent",
+  isClass: true,
+  parameters: {
+    MyComponent: [
+      { name: "a", type: "string", tsType: "", isOptional: false },
+      { name: "b", type: "number", tsType: "", isOptional: false },
+    ],
+  },
+  code: `export class MyClassComponent { constructor(a: string, b: number) {} };`,
+};
+export const exportReactLikeFunctionComponent: DeclarationTemplate = {
+  name: "MyFunctionalComponent",
+  isClass: true,
+  parameters: {
+    MyComponent: [
+      { name: "a", type: "string", tsType: "", isOptional: false },
+      { name: "b", type: "number", tsType: "", isOptional: false },
+    ],
+  },
+  code: `export const MyFunctionalComponent = ({a, b}: {a: string, b: number}) => null;`,
+};

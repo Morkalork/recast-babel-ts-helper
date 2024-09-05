@@ -37,3 +37,8 @@ export declare const classExportWithParameters: DeclarationTemplate;
 export declare const exportImportedExportFunction: DeclarationTemplate;
 export declare const exportImportImmediatelyFunction: DeclarationTemplate;
 export declare const exportAllNamed: DeclarationTemplate;
+/**
+ * React component-like tests
+ */
+export declare const exportReactLikeClassComponent: DeclarationTemplate;
+export declare const exportReactLikeFunctionComponent: DeclarationTemplate;

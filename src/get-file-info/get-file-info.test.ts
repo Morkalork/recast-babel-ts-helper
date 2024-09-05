@@ -1,6 +1,7 @@
 import { getFileInfo } from "./get-file-info";
 import fs from "fs";
 import * as vscode from "vscode";
+import { makeUriFile } from "../utils-test/make-uri-file";
 
 jest.mock("fs", () => ({
   readFileSync: jest.fn(),
@@ -26,6 +27,9 @@ describe("getFileInfo", () => {
     const filePath = "file.ts";
     const fsMock = jest.mocked(fs);
     fsMock.readFileSync.mockReturnValue("text");
+
+    const uriMock = jest.mocked(vscode.Uri);
+    uriMock.file.mockReturnValue(makeUriFile({ fsPath: filePath }));
 
     const result = await getFileInfo(filePath);
     expect(result.text).toEqual("text");
