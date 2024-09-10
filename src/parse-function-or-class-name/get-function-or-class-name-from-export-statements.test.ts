@@ -5,7 +5,7 @@ import * as testCases from "./test-utils/standard-test-cases";
 import { generateAstFromCode } from "../generate-ast-from-code";
 
 describe("getFunctionOrClassNameFromExportStatements", () => {
-  it("should work", () => {
+  it("should get a basic function", () => {
     const exportSpecifier: ExportSpecifier = {
       type: "ExportSpecifier",
       exported: {

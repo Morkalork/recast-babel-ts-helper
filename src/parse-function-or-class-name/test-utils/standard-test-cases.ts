@@ -171,7 +171,7 @@ export const exportAllNamed: DeclarationTemplate = {
  * React component-like tests
  */
 export const exportReactLikeClassComponent: DeclarationTemplate = {
-  name: "MyClassComponent",
+  name: "MyReactClassComponent",
   isClass: true,
   parameters: {
     MyComponent: [
@@ -179,10 +179,10 @@ export const exportReactLikeClassComponent: DeclarationTemplate = {
       { name: "b", type: "number", tsType: "", isOptional: false },
     ],
   },
-  code: `export class MyClassComponent { constructor(a: string, b: number) {} };`,
+  code: `export class MyReactClassComponent { constructor(a: string, b: number) {} };`,
 };
 export const exportReactLikeFunctionComponent: DeclarationTemplate = {
-  name: "MyFunctionalComponent",
+  name: "MyFunctionalReactComponent",
   isClass: true,
   parameters: {
     MyComponent: [
@@ -190,5 +190,17 @@ export const exportReactLikeFunctionComponent: DeclarationTemplate = {
       { name: "b", type: "number", tsType: "", isOptional: false },
     ],
   },
-  code: `export const MyFunctionalComponent = ({a, b}: {a: string, b: number}) => null;`,
+  code: `export const MyFunctionalReactComponent = ({a, b}: {a: string, b: number}) => null;`,
+};
+
+export const exportReactLikeFunctionWithSeparateType: DeclarationTemplate = {
+  name: "MyFunctionalComponentWithPropType",
+  isClass: false,
+  parameters: {
+    MyFunctionalComponentWithPropType: [
+      { name: "a", type: "any", tsType: "", isOptional: false },
+      { name: "b", type: "any", tsType: "", isOptional: false },
+    ],
+  },
+  code: `type MyProps = {a: string, b: number}; export const MyFunctionalComponentWithPropType = ({a, b}: MyProps) => null;`,
 };
