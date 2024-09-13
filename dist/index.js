@@ -154,6 +154,32 @@ const getParametersFromNode = (node) => {
     if ("params" in node) {
         params = node.params;
     }
+    else if ("init" in node && node.init && "params" in node.init) {
+        if (node.init.params.length === 1) {
+            if (isOfNodeType(node.init.params[0], "ObjectPattern")) {
+                const objectPattern = node.init.params[0];
+                if ("properties" in objectPattern && objectPattern.properties) {
+                    params = objectPattern.properties
+                        .filter((property) => "key" in property &&
+                        isOfNodeType(property.key, "Identifier"))
+                        .reduce((acc, property) => {
+                        if ("key" in property && "name" in property.key) {
+                            const identifier = {
+                                name: property.key.name,
+                                type: "Identifier",
+                                optional: false,
+                            };
+                            return [...acc, identifier];
+                        }
+                        return acc;
+                    }, []);
+                }
+            }
+        }
+        else {
+            params = node.init.params;
+        }
+    }
     else if (isOfNodeType(node, "VariableDeclarator") &&
         node.init &&
         "params" in node.init) {

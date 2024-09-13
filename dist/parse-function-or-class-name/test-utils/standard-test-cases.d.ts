@@ -42,3 +42,4 @@ export declare const exportAllNamed: DeclarationTemplate;
  */
 export declare const exportReactLikeClassComponent: DeclarationTemplate;
 export declare const exportReactLikeFunctionComponent: DeclarationTemplate;
+export declare const exportReactLikeFunctionWithSeparateType: DeclarationTemplate;
